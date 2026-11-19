@@ -1,0 +1,53 @@
+// Share page: saves submitted answers and shows floating affirmations.
+// Needs storage.js loaded first.
+
+const form = document.getElementById('share-form');
+const textarea = document.getElementById('struggle');
+
+// Save the answer in this browser instead of reloading the page.
+form.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const text = textarea.value.trim();
+  if (!text) return;                  // skip empty submissions
+  if (saveAnswer(text)) form.reset(); // clear the box only once it's saved
+});
+
+const lines = [
+  "You don't have to be afraid anymore",
+  "Your fears are valid",
+  "You always have a point",
+  "You are strong",
+  "You are brave"
+];
+
+const FADE_MS = 500;    // matches the CSS transition
+const VISIBLE_MS = 1000; // time fully on screen
+
+const affirmation = document.getElementById('affirmation');
+let index = 0;
+
+function randomBetween(min, max) {
+  return min + Math.random() * (max - min);
+}
+
+function showNextLine() {
+  affirmation.textContent = lines[index];
+  index = (index + 1) % lines.length;
+
+  // Random size from 12px to 16px.
+  affirmation.style.fontSize = Math.round(randomBetween(12, 16)) + 'px';
+
+  // Random position that keeps the whole line inside the window.
+  const maxLeft = Math.max(0, window.innerWidth - affirmation.offsetWidth);
+  const maxTop = Math.max(0, window.innerHeight - affirmation.offsetHeight);
+  affirmation.style.left = randomBetween(0, maxLeft) + 'px';
+  affirmation.style.top = randomBetween(0, maxTop) + 'px';
+
+  affirmation.style.opacity = 1;
+  setTimeout(() => {
+    affirmation.style.opacity = 0;
+    setTimeout(showNextLine, FADE_MS);
+  }, FADE_MS + VISIBLE_MS);
+}
+
+showNextLine();
