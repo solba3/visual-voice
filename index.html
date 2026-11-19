@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Share with Me</title>
+  <style>
+    /* Layout only: keeps the content centered on the page at any window size. */
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Floating affirmation: placed at a random spot, fades in and out. */
+    #affirmation {
+      position: fixed;
+      margin: 0;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.5s;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>What are you struggling with currently?</h1>
+  <form id="share-form">
+    <textarea id="struggle" name="struggle" maxlength="500" aria-label="What are you struggling with currently?"></textarea>
+    <button type="submit">Submit</button>
+  </form>
+
+  <p id="affirmation" aria-hidden="true"></p>
+
+  <script>
+    // Nothing to send the text to yet, so keep the page from reloading and clearing it.
+    document.getElementById('share-form').addEventListener('submit', (event) => {
+      event.preventDefault();
+    });
+
+    const lines = [
+      "You don't have to be afraid anymore",
+      "Your fears are valid",
+      "You always have a point",
+      "You are strong",
+      "You are brave"
+    ];
+
+    const FADE_MS = 500;    // matches the CSS transition
+    const VISIBLE_MS = 1000; // time fully on screen
+
+    const affirmation = document.getElementById('affirmation');
+    let index = 0;
+
+    function randomBetween(min, max) {
+      return min + Math.random() * (max - min);
+    }
+
+    function showNextLine() {
+      affirmation.textContent = lines[index];
+      index = (index + 1) % lines.length;
+
+      // Random size from 12px to 16px.
+      affirmation.style.fontSize = Math.round(randomBetween(12, 16)) + 'px';
+
+      // Random position that keeps the whole line inside the window.
+      const maxLeft = Math.max(0, window.innerWidth - affirmation.offsetWidth);
+      const maxTop = Math.max(0, window.innerHeight - affirmation.offsetHeight);
+      affirmation.style.left = randomBetween(0, maxLeft) + 'px';
+      affirmation.style.top = randomBetween(0, maxTop) + 'px';
+
+      affirmation.style.opacity = 1;
+      setTimeout(() => {
+        affirmation.style.opacity = 0;
+        setTimeout(showNextLine, FADE_MS);
+      }, FADE_MS + VISIBLE_MS);
+    }
+
+    showNextLine();
+  </script>
+</body>
+</html>
