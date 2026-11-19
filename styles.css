@@ -19,8 +19,10 @@ body {
     }
 
     #container {
+        position: fixed;
         width: 100%;
         height: 100%;
+        margin: 0;
     }
 
     /* Floating affirmation: placed at a random spot, fades in and out. */
