@@ -15,10 +15,21 @@
 
   <p id="affirmation" aria-hidden="true"></p>
 
+  <footer>
+    <a href="answers.html">answers</a>
+  </footer>
+
+  <script src="storage.js"></script>
   <script>
-    // Nothing to send the text to yet, so keep the page from reloading and clearing it.
-    document.getElementById('share-form').addEventListener('submit', (event) => {
+    const form = document.getElementById('share-form');
+    const textarea = document.getElementById('struggle');
+
+    // Save the answer in this browser instead of reloading the page.
+    form.addEventListener('submit', (event) => {
       event.preventDefault();
+      const text = textarea.value.trim();
+      if (!text) return;                  // skip empty submissions
+      if (saveAnswer(text)) form.reset(); // clear the box only once it's saved
     });
 
     const lines = [
